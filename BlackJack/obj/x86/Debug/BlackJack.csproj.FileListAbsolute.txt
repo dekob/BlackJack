@@ -1,0 +1,12 @@
+d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\bin\Debug\BlackJack.exe
+d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\bin\Debug\BlackJack.pdb
+d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.csproj.GenerateResource.Cache
+d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.exe
+d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.pdb
+d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.csprojResolveAssemblyReference.cache
+D:\Documents\Visual Studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.Pocetna.resources
+D:\Documents\Visual Studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.GlavnaIgra.resources
+D:\Documents\Visual Studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.Pomos.resources
+D:\Documents\Visual Studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.BrojNaIgraci.resources
+D:\Documents\Visual Studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.Properties.Resources.resources
+d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.WebBrowser.resources

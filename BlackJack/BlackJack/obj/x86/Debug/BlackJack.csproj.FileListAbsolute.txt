@@ -1,9 +1,0 @@
-d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\bin\Debug\BlackJack.exe
-d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\bin\Debug\BlackJack.pdb
-d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.Form1.resources
-d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.Properties.Resources.resources
-d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.csproj.GenerateResource.Cache
-d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.exe
-d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.pdb
-d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.Form2.resources
-d:\documents\visual studio 2010\Projects\BlackJack\BlackJack\obj\x86\Debug\BlackJack.csprojResolveAssemblyReference.cache

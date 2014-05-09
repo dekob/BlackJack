@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AD347C65-922B-45C6-85F2-8F7CFA7DB637}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BlackJack</RootNamespace>
+    <AssemblyName>BlackJack</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Messaging" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BrojNaIgraci.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BrojNaIgraci.Designer.cs">
+      <DependentUpon>BrojNaIgraci.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Dealer.cs" />
+    <Compile Include="Igrac.cs" />
+    <Compile Include="Karta.cs" />
+    <Compile Include="Player.cs" />
+    <Compile Include="Pocetna.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pocetna.Designer.cs">
+      <DependentUpon>Pocetna.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GlavnaIgra.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GlavnaIgra.Designer.cs">
+      <DependentUpon>GlavnaIgra.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Pomos.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Pomos.Designer.cs">
+      <DependentUpon>Pomos.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Score.cs" />
+    <Compile Include="usedCards.cs" />
+    <Compile Include="WebBrowser.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WebBrowser.Designer.cs">
+      <DependentUpon>WebBrowser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Scores.cs" />
+    <EmbeddedResource Include="BrojNaIgraci.resx">
+      <DependentUpon>BrojNaIgraci.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pocetna.resx">
+      <DependentUpon>Pocetna.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GlavnaIgra.resx">
+      <DependentUpon>GlavnaIgra.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Pomos.resx">
+      <DependentUpon>Pomos.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WebBrowser.resx">
+      <DependentUpon>WebBrowser.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pocetnasoIme.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pocetnaSoImeIKopcinaverz2.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LIST gore desno.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LIST gore desno1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SRCE dolu desnoo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\DETELINA dolu levo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LOKUM najgore.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LOKUM sredina.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LOKUM dolu %281%29.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\verzija3.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pozadinaZaHelp.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\player.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\slika.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\2-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\2-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\2-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\2-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\3-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\3-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\3-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\3-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\4-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\4-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\4-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\4-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\5-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\5-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\5-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\5-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\6-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\6-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\6-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\6-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\7-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\7-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\7-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\7-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\8-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\8-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\8-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\8-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\9-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\9-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\9-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\9-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\10-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\10-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\10-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\10-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\11-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\11-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\11-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\11-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\12-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\12-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\12-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\12-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\13-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\13-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\13-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\13-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\14-1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\14-2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\14-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\14-4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\zadna.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dealer.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\brojnaigraci.jpg" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
