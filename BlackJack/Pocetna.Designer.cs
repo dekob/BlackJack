@@ -105,7 +105,7 @@
             // pictureBox6
             // 
             this.pictureBox6.BackColor = System.Drawing.Color.Red;
-            this.pictureBox6.BackgroundImage = global::BlackJack.Properties.Resources.LOKUM_dolu__1_;
+            this.pictureBox6.BackgroundImage = global::BlackJack.Properties.Resources._239555;
             this.pictureBox6.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.pictureBox6.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox6.Location = new System.Drawing.Point(329, 164);

@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Media;
 
 namespace BlackJack
 {
@@ -26,10 +27,14 @@ namespace BlackJack
         String[] iminja;
         int[] vlogo;
         public Timer timerIgrac { set; get; }
+        public SoundPlayer player;
+        public SoundPlayer loser;
         public GlavnaIgra(int brojig, Pocetna p1, String[] imi, int[] vlog)
         {
             InitializeComponent();
             igraci = new List<Player>();
+            player = new SoundPlayer("winning.wav");
+            loser = new SoundPlayer("losing.wav");
             timerIgrac = new Timer();
             timerIgrac.Interval = 500;
             timerIgrac.Tick += new EventHandler(timerIgrac_Tick);
@@ -470,6 +475,7 @@ namespace BlackJack
         public void pobednikNaIgrata()
         {
             timerIgrac.Stop();
+            player.Play();
             DialogResult d = MessageBox.Show("Играчот: "+String.Format("{0}", aktivenIgrac.ime)+" доби BlackJack. Неговата добивка изнесува"+String.Format("{0}", (aktivenIgrac.vlog+(int)(aktivenIgrac.vlog*1.50))), "BlackJack.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             aktivenIgrac.vlog= aktivenIgrac.vlog+(int)(aktivenIgrac.vlog*1.50);
             aktivenIgrac.pobednik = true;
@@ -498,6 +504,7 @@ namespace BlackJack
         {
             MessageBox.Show("Играчот со имe:" + aktivenIgrac.ime + " изгуби бидејќи има збир на карти " + aktivenIgrac.presmetajZbir().ToString(), "Изгубена партија", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             aktivenIgrac.igra = false;
+            loser.Play();
             listBox1.Items.Clear();
             listBox1.Items.Add("Име на Играч     Збир на карти     Вкупен Влог");
             listBox1.Items.Add("----------------------------------------------------------------------------");
@@ -879,9 +886,9 @@ namespace BlackJack
                              listBox2.Items.Add(p.ime+ "            " + p.vlog/2);
                         }
                     }
-                   
+                   player.Play();
                     d = MessageBox.Show("Играта е завршена. Делачот изгуби. Добитници се"+g+" со добивка"+pom+ " . Дали сакате уште една партија BlackJack?", "Завршена игра", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-               
+                    
                 }
                 else {
                     int f = 0;
@@ -893,7 +900,7 @@ namespace BlackJack
                         }
                     }
                     listBox2.Items.Add("dealer "+ "            " + f);
-
+                    player.Play();
                     d = MessageBox.Show("Играта е завршена. Делачот победи. Неговата добивка изнесува "+f, "Дали сакате уште една партија BlackJack?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     
                 }
@@ -933,8 +940,9 @@ namespace BlackJack
             timerIgrac.Stop();
             brojac = 0;
             listBox2.Items.Add("Делач" + "            " + this.presmetajDelacDobivka());
+            player.Play();
             DialogResult d = MessageBox.Show("Играта е завршена. Делачот доби добивка. Тој има добивка:" + presmetajDelacDobivka() + ". Дали сакате уште една партија?", "Завршена партија.", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
+            
             if (d == DialogResult.Yes)
             {
                 this.Close();
@@ -960,6 +968,7 @@ namespace BlackJack
             if ((p1 != null)&&(p1.presmetajZbir()!=dealer.PresmetajZbirKarti()))
             {
                 listBox2.Items.Add(p1.ime + "            " + p1.vlog / 2);
+                player.Play();
                 DialogResult d = MessageBox.Show("Делачот изгуби, добитник во играта е играчот" + p1.ime + " со збир на карти: " + p1.presmetajZbir() + ". Дали сакате уште една партија BlackJack?", "Завршена партија.", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (d == DialogResult.Yes)
                 {
@@ -973,6 +982,7 @@ namespace BlackJack
             else if (p1 == null)
             {
                 listBox2.Items.Add("dealer" + "                " + this.presmetajDelacDobivka());
+                player.Play();
                 DialogResult d = MessageBox.Show("Победник на играта е делачот, со збир на карти: " + dealer.PresmetajZbirKarti() + ". Дали сакате уште една партија BlackJack?", "Завршена партија.", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (d == DialogResult.Yes)
                 {
@@ -1629,6 +1639,8 @@ namespace BlackJack
         {
             brojac = 0;
             timerIgrac.Stop();
+            player.Stop();
+            loser.Stop();
         }
 
 

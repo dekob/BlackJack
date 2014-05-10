@@ -69,9 +69,9 @@ namespace BlackJack
 
         private void pictureBox6_Click(object sender, EventArgs e)
         {
-            WebBrowser web = new WebBrowser("https://instagram.com/black_jack_macedonia/#");
+            WebBrowser web = new WebBrowser("https://www.youtube.com/watch?v=W4QPE0GeUfw");
 
-            web.Text = "Instagram- Black Jack Macedonia Game";
+            web.Text = "Youtube- Black Jack Macedonia Game";
             web.ShowDialog();
         }
 
