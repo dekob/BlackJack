@@ -502,9 +502,10 @@ namespace BlackJack
 
         private void izbrisiIgrac(Player aktivenIgrac)
         {
+            loser.Play();
             MessageBox.Show("Играчот со имe:" + aktivenIgrac.ime + " изгуби бидејќи има збир на карти " + aktivenIgrac.presmetajZbir().ToString(), "Изгубена партија", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             aktivenIgrac.igra = false;
-            loser.Play();
+            
             listBox1.Items.Clear();
             listBox1.Items.Add("Име на Играч     Збир на карти     Вкупен Влог");
             listBox1.Items.Add("----------------------------------------------------------------------------");
