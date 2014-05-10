@@ -99,11 +99,12 @@ UsedCards ни претставува помошна структура која
       
       •	Dealer- Референца кон Dealer објект кој го репрезентира Делачот во играта (постои само еден Делач)
 
+
       3.2	Функции и класи кои се користат
       
-      Главната функција која се користи за генерирање на карти е generirajKarta() во класата Karta.
+Главната функција која се користи за генерирање на карти е generirajKarta() во класата Karta.
       
-      public void generirajKarta()
+             public void generirajKarta()
         {
             int broj1;
             int broj2;
@@ -123,11 +124,11 @@ UsedCards ни претставува помошна структура која
 
 Функциите кои се наоѓаат во класата UsedCards се:
 
-public void dodajKarta(int broj, int boja)
+      public void dodajKarta(int broj, int boja)
         {
             upotrebeniKarti[boja, broj] = true;
         }
-public bool zafatenaKarta(int broj, int boja)
+      public bool zafatenaKarta(int broj, int boja)
         {
             return upotrebeniKarti[boja, broj];
         }
@@ -135,7 +136,7 @@ public bool zafatenaKarta(int broj, int boja)
 Првата функција има задача да додади една карта во матрицата на зафатени карти, додека втората има задача да врати вредност дали картата била зафатена (со помош на вредностите broj и boja).
 Следната функција има задача да го испише името на добитникот во играта како и неговата добивка:
 
-public void pobednikNaIgrata()
+      public void pobednikNaIgrata()
         {
             timerIgrac.Stop();
             brojac=0;
