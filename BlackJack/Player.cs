@@ -31,6 +31,8 @@ namespace BlackJack
             ikona = panela;
             doubledown = false;
             aktiven = false;
+            otkazi = false;
+            pobednik = false;
             r = new Random();
             id_igr = id;
             igra = true;
@@ -103,7 +105,7 @@ namespace BlackJack
         }
         public void dodadiKarta(Karta k)
         {
-            if (karti.Count<=3)
+            if (karti.Count<5)
             karti.Add(k);
         }
         public void postaviSlika()

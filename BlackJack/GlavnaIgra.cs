@@ -33,6 +33,7 @@ namespace BlackJack
         {
             InitializeComponent();
             igraci = new List<Player>();
+            
             player = new SoundPlayer("winning.wav");
             loser = new SoundPlayer("losing.wav");
             timerIgrac = new Timer();
@@ -92,18 +93,38 @@ namespace BlackJack
 
         private void popolniList()
         {
-            listBox1.Items.Clear();
-            listBox1.Items.Add(String.Format("{0, -20}", "Име на играч")+String.Format("{0, -16}", "Збир на карти")+"Вкупен влог");
-            listBox1.Items.Add("----------------------------------------------------------------------------");
             
+            dataGridView1.Rows.Clear();
             foreach (Player p in igraci)
             {
-                listBox1.Items.Add(String.Format("{0,-30}", p.ime)+ String.Format("{0, -20}", p.presmetajZbir().ToString()) + p.vlog.ToString());
-                
+                String[] pom = new String[3];
+                if (p.igra)
+                {
+                    
+                    pom[0] = p.ime;
+                    pom[1] = p.presmetajZbir().ToString();
+                    pom[2] = p.vlog.ToString();
+                }
+                else if (p.otkazi)
+                {
+                    pom[0] = p.ime+"(откажан)";
+                    pom[1] = p.presmetajZbir().ToString();
+                    pom[2] = p.vlog.ToString();
+                }
+                else if (!p.pobednik)
+                {
+                    pom[0] = p.ime + "(изгуби)";
+                    pom[1] = p.presmetajZbir().ToString();
+                    pom[2] = p.vlog.ToString();
+                }
+                else
+                {
+                    pom[0] = p.ime+"(победник)";
+                    pom[1] = p.presmetajZbir().ToString();
+                    pom[2] = p.vlog.ToString();
+                }
+                dataGridView1.Rows.Add(pom);
             }
-            listBox1.Items.Add("---------------------------------------------------------------------------");
-            listBox1.Items.Add(String.Format("{0, -32}", "Делач")+dealer.PresmetajZbirKarti() );
-
         }
 
         private void generirajSpil()
@@ -418,26 +439,30 @@ namespace BlackJack
             int broja = 0;
             int boja1=0;
             brojac = 0;
-            while (true)
-            { 
-                 broja=r.Next(2, 14);
-            boja1=r.Next(1, 4);
-                if (!upotrebeniKarti.zafatenaKarta(broja-1, boja1-1))
+            if (aktivenIgrac.brojNaKarti < 5)
+            {
+                while (true)
                 {
-                    upotrebeniKarti.dodajKarta(broja-1, boja1-1);
-                    break;
+                    broja = r.Next(2, 14);
+                    boja1 = r.Next(1, 4);
+                    if (!upotrebeniKarti.zafatenaKarta(broja - 1, boja1 - 1))
+                    {
+                        upotrebeniKarti.dodajKarta(broja - 1, boja1 - 1);
+                        break;
+                    }
                 }
+                Karta k = new Karta(aktivenIgrac, aktivenIgrac.brojNaKarti + 1, upotrebeniKarti, boja1, broja);
+
+                String pateka = "karti/";
+                pateka += broja.ToString() + "-" + boja1.ToString() + ".png";
+                PictureBox box = (PictureBox)aktivenIgrac.ikona.Controls["pictureBox" + aktivenIgrac.id_igr + (aktivenIgrac.brojNaKarti + 1).ToString()];
+                aktivenIgrac.dodadiKarta(k);
+                box.Visible = true;
+                box.Image = Image.FromFile(pateka);
+                this.popolniList();
             }
-            Karta k = new Karta(aktivenIgrac, aktivenIgrac.brojNaKarti+1, upotrebeniKarti, boja1, broja);
             
-            String pateka = "karti/";
-            pateka += broja.ToString() + "-" + boja1.ToString()+".png";
-            PictureBox box = (PictureBox)aktivenIgrac.ikona.Controls["pictureBox" + aktivenIgrac.id_igr + (aktivenIgrac.brojNaKarti+1).ToString()];
-            aktivenIgrac.dodadiKarta(k);
-            box.Visible = true;
-            box.Image = Image.FromFile(pateka);
-            this.popolniList();
-            aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "1"].Visible = false;
+                aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "1"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "2"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "3"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "4"].Visible = false;
@@ -468,7 +493,21 @@ namespace BlackJack
                 pobednikNaIgrata();
             
             }
-            else aktivenIgrac.PostaviAktiven();
+            else if ((aktivenIgrac.presmetajZbir()<21)&&(aktivenIgrac.brojNaKarti < 5))  aktivenIgrac.PostaviAktiven();
+            else if (aktivenIgrac.presmetajZbir() < 21)
+            {
+                if ((igraci.Count > aktivenIgrac.id_igr) && ((igraci.Count > aktivenIgrac.id_igr) && (igraci[aktivenIgrac.id_igr] != null)))
+                {
+                    aktivenIgrac = igraci[aktivenIgrac.id_igr];
+                    brojac = 0;
+                    aktivenIgrac.PostaviAktiven();
+                }
+                else
+                {
+                    brojac = 0;
+                    otvoriKartaDealer();
+                }
+            }
             
         }
 
@@ -476,8 +515,8 @@ namespace BlackJack
         {
             timerIgrac.Stop();
             player.Play();
-            DialogResult d = MessageBox.Show("Играчот: "+String.Format("{0}", aktivenIgrac.ime)+" доби BlackJack. Неговата добивка изнесува"+String.Format("{0}", (aktivenIgrac.vlog+(int)(aktivenIgrac.vlog*1.50))), "BlackJack.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            aktivenIgrac.vlog= aktivenIgrac.vlog+(int)(aktivenIgrac.vlog*1.50);
+            DialogResult d = MessageBox.Show("Играчот: "+String.Format("{0}", aktivenIgrac.ime)+" доби BlackJack. Неговата добивка изнесува"+String.Format("{0}", (aktivenIgrac.vlog+(int)(aktivenIgrac.vlog*1.25))), "BlackJack.", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            aktivenIgrac.vlog= aktivenIgrac.vlog+(int)(aktivenIgrac.vlog*1.25);
             aktivenIgrac.pobednik = true;
             aktivenIgrac.igra = false;
             ispolnilistapobednik();
@@ -496,35 +535,21 @@ namespace BlackJack
 
         private void ispolnilistapobednik()
         {
-           
-            listBox2.Items.Add(aktivenIgrac.ime + "            " + (aktivenIgrac.vlog+(int)(aktivenIgrac.vlog*1.5)));
+            String[] po = new String[2];
+            po[0] = aktivenIgrac.ime;
+            int k = aktivenIgrac.vlog;
+            po[1] = k.ToString();
+            dataGridView3.Rows.Add(po);
+            
         }
 
         private void izbrisiIgrac(Player aktivenIgrac)
         {
             loser.Play();
-            MessageBox.Show("Играчот со имe:" + aktivenIgrac.ime + " изгуби бидејќи има збир на карти " + aktivenIgrac.presmetajZbir().ToString(), "Изгубена партија", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            MessageBox.Show("Играчот со имe: " + aktivenIgrac.ime + " изгуби бидејќи има збир на карти " + aktivenIgrac.presmetajZbir().ToString(), "Изгубена партија", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             aktivenIgrac.igra = false;
-            
-            listBox1.Items.Clear();
-            listBox1.Items.Add("Име на Играч     Збир на карти     Вкупен Влог");
-            listBox1.Items.Add("----------------------------------------------------------------------------");
 
-            foreach (Player p in igraci)
-            {
-                if (p.id_igr == aktivenIgrac.id_igr)
-                {
-
-                    listBox1.Items.Add(String.Format("{0,-10}", p.ime) + " (изгуби)     " + p.presmetajZbir().ToString() + "                 " + p.vlog.ToString());
-
-                }
-                else listBox1.Items.Add(String.Format("{0,-30}", p.ime) + p.presmetajZbir().ToString() + "                   " + p.vlog.ToString());
-
-            }
-            listBox1.Items.Add("---------------------------------------------------------------------------");
-            listBox1.Items.Add("Делач:" + "                        " + "                                              " + dealer.PresmetajZbirKarti().ToString());
-
- 
+            this.popolniList();
             brojac = 0;
             aktivenIgrac.ikona.Dispose();
         }
@@ -537,35 +562,18 @@ namespace BlackJack
 
         private void popolniListaOtkazan()
         {
-            listBox1.Items.Clear();
-            listBox1.Items.Add("Име на Играч     Збир на карти     Вкупен Влог");
-            listBox1.Items.Add("----------------------------------------------------------------------------");
-
-            foreach (Player p in igraci)
-            {
-                if (p.id_igr == aktivenIgrac.id_igr)
-                {
-                   
-                    listBox1.Items.Add(String.Format("{0,-10}", p.ime) + " (откажан)   "+p.presmetajZbir().ToString() + "                 " + p.vlog.ToString());
-
-                }
-                else  listBox1.Items.Add(String.Format("{0,-30}", p.ime) + p.presmetajZbir().ToString() + "                   " + p.vlog.ToString());
-
-            }
-            listBox1.Items.Add("---------------------------------------------------------------------------");
-            listBox1.Items.Add("Делач:" + "                        " + dealer.PresmetajZbirKarti().ToString() + "                        " + Dealer.vlog.ToString());
-
+            this.popolniList();
     
         }
         private void panel3_Paint(object sender, PaintEventArgs e)
         {
-
+           
         }
 
         private void button21_Click(object sender, EventArgs e)
         {
             timerIgrac.Stop();
-            if (aktivenIgrac.brojNaKarti <= 5)
+            if (aktivenIgrac.brojNaKarti < 5)
             {
                 int broja = 0;
                 int boja1 = 0;
@@ -589,6 +597,7 @@ namespace BlackJack
                 box.Visible = true;
                 box.Image = Image.FromFile(pateka);
                 this.popolniList();
+            }
                 aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "1"].Visible = false;
                 aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "2"].Visible = false;
                 aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "3"].Visible = false;
@@ -618,8 +627,22 @@ namespace BlackJack
                 {
                     pobednikNaIgrata();
                 }
-                else aktivenIgrac.PostaviAktiven();
-            }
+                else if ((aktivenIgrac.presmetajZbir()<21)&&(aktivenIgrac.brojNaKarti < 5)) aktivenIgrac.PostaviAktiven();
+                else if (aktivenIgrac.presmetajZbir() < 21)
+                {
+                    if ((igraci.Count > aktivenIgrac.id_igr) && ((igraci.Count > aktivenIgrac.id_igr) && (igraci[aktivenIgrac.id_igr] != null)))
+                    {
+                        aktivenIgrac = igraci[aktivenIgrac.id_igr];
+                        brojac = 0;
+                        aktivenIgrac.PostaviAktiven();
+                    }
+                    else
+                    {
+                        brojac = 0;
+                        otvoriKartaDealer();
+                    }
+                }
+            
 
         }
 
@@ -628,27 +651,29 @@ namespace BlackJack
             timerIgrac.Stop();
             int broja = 0;
             int boja1 = 0;
-            brojac = 0;
-            while (true)
+            if (aktivenIgrac.brojNaKarti < 5)
             {
-                broja = r.Next(2, 14);
-                boja1 = r.Next(1, 4);
-                if (!upotrebeniKarti.zafatenaKarta(broja - 1, boja1 - 1))
+                while (true)
                 {
-                    upotrebeniKarti.dodajKarta(broja - 1, boja1 - 1);
-                    break;
+                    broja = r.Next(2, 14);
+                    boja1 = r.Next(1, 4);
+                    if (!upotrebeniKarti.zafatenaKarta(broja - 1, boja1 - 1))
+                    {
+                        upotrebeniKarti.dodajKarta(broja - 1, boja1 - 1);
+                        break;
+                    }
                 }
+                Karta k = new Karta(aktivenIgrac, aktivenIgrac.brojNaKarti + 1, upotrebeniKarti, boja1, broja);
+
+                String pateka = "karti/";
+                pateka += broja.ToString() + "-" + boja1.ToString() + ".png";
+                PictureBox box = (PictureBox)aktivenIgrac.ikona.Controls["pictureBox" + aktivenIgrac.id_igr + (aktivenIgrac.brojNaKarti + 1).ToString()];
+                aktivenIgrac.dodadiKarta(k);
+                box.Visible = true;
+                box.Image = Image.FromFile(pateka);
+                this.popolniList();
             }
-            Karta k = new Karta(aktivenIgrac, aktivenIgrac.brojNaKarti+1, upotrebeniKarti, boja1, broja);
-            
-            String pateka = "karti/";
-            pateka += broja.ToString() + "-" + boja1.ToString() + ".png";
-            PictureBox box = (PictureBox)aktivenIgrac.ikona.Controls["pictureBox" + aktivenIgrac.id_igr + (aktivenIgrac.brojNaKarti + 1).ToString()];
-            aktivenIgrac.dodadiKarta(k);
-            box.Visible = true;
-            box.Image = Image.FromFile(pateka);
-            this.popolniList();
-            aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "1"].Visible = false;
+                aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "1"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "2"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "3"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "4"].Visible = false;
@@ -676,7 +701,21 @@ namespace BlackJack
             {
                 pobednikNaIgrata();
             }
-            else { aktivenIgrac.PostaviAktiven(); }
+            else if ((aktivenIgrac.presmetajZbir()<21)&&(aktivenIgrac.brojNaKarti < 5)){ aktivenIgrac.PostaviAktiven(); }
+            else if (aktivenIgrac.presmetajZbir() < 21)
+            {
+                if ((igraci.Count > aktivenIgrac.id_igr) && ((igraci.Count > aktivenIgrac.id_igr) && (igraci[aktivenIgrac.id_igr] != null)))
+                {
+                    aktivenIgrac = igraci[aktivenIgrac.id_igr];
+                    brojac = 0;
+                    aktivenIgrac.PostaviAktiven();
+                }
+                else
+                {
+                    brojac = 0;
+                    otvoriKartaDealer();
+                }
+            }
 
         }
 
@@ -686,27 +725,30 @@ namespace BlackJack
             int broja = 0;
             int boja1 = 0;
             brojac = 0;
-            while (true)
+            if (aktivenIgrac.brojNaKarti < 5)
             {
-                broja = r.Next(2, 14);
-                boja1 = r.Next(1, 4);
-                if (!upotrebeniKarti.zafatenaKarta(broja - 1, boja1 - 1))
+                while (true)
                 {
-                    upotrebeniKarti.dodajKarta(broja - 1, boja1 - 1);
-                    break;
+                    broja = r.Next(2, 14);
+                    boja1 = r.Next(1, 4);
+                    if (!upotrebeniKarti.zafatenaKarta(broja - 1, boja1 - 1))
+                    {
+                        upotrebeniKarti.dodajKarta(broja - 1, boja1 - 1);
+                        break;
+                    }
                 }
-            }
-            Karta k = new Karta(aktivenIgrac, aktivenIgrac.brojNaKarti+1, upotrebeniKarti, boja1, broja);
-            
-            String pateka = "karti/";
-            pateka += broja.ToString() + "-" + boja1.ToString() + ".png";
-            PictureBox box = (PictureBox)aktivenIgrac.ikona.Controls["pictureBox" + aktivenIgrac.id_igr + (aktivenIgrac.brojNaKarti + 1).ToString()];
+                Karta k = new Karta(aktivenIgrac, aktivenIgrac.brojNaKarti + 1, upotrebeniKarti, boja1, broja);
 
-            aktivenIgrac.dodadiKarta(k); 
-            box.Visible = true;
-            box.Image = Image.FromFile(pateka);
-            this.popolniList();
-            aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "1"].Visible = false;
+                String pateka = "karti/";
+                pateka += broja.ToString() + "-" + boja1.ToString() + ".png";
+                PictureBox box = (PictureBox)aktivenIgrac.ikona.Controls["pictureBox" + aktivenIgrac.id_igr + (aktivenIgrac.brojNaKarti + 1).ToString()];
+
+                aktivenIgrac.dodadiKarta(k);
+                box.Visible = true;
+                box.Image = Image.FromFile(pateka);
+                this.popolniList();
+            }
+                aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "1"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "2"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "3"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "4"].Visible = false;
@@ -735,7 +777,21 @@ namespace BlackJack
             {
                 pobednikNaIgrata();
             }
-            else aktivenIgrac.PostaviAktiven();
+            else if ((aktivenIgrac.presmetajZbir()<21)&&(aktivenIgrac.brojNaKarti < 5))  aktivenIgrac.PostaviAktiven();
+            else if (aktivenIgrac.presmetajZbir() < 21)
+            {
+                if ((igraci.Count > aktivenIgrac.id_igr) && ((igraci.Count > aktivenIgrac.id_igr) && (igraci[aktivenIgrac.id_igr] != null)))
+                {
+                    aktivenIgrac = igraci[aktivenIgrac.id_igr];
+                    brojac = 0;
+                    aktivenIgrac.PostaviAktiven();
+                }
+                else
+                {
+                    brojac = 0;
+                    otvoriKartaDealer();
+                }
+            }
         }
 
         private void button51_Click(object sender, EventArgs e)
@@ -744,26 +800,29 @@ namespace BlackJack
             int broja = 0;
             int boja1 = 0;
             brojac = 0;
-            while (true)
+            if (aktivenIgrac.brojNaKarti < 5)
             {
-                broja = r.Next(2, 14);
-                boja1 = r.Next(1, 4);
-                if (!upotrebeniKarti.zafatenaKarta(broja - 1, boja1 - 1))
+                while (true)
                 {
-                    upotrebeniKarti.dodajKarta(broja - 1, boja1 - 1);
-                    break;
+                    broja = r.Next(2, 14);
+                    boja1 = r.Next(1, 4);
+                    if (!upotrebeniKarti.zafatenaKarta(broja - 1, boja1 - 1))
+                    {
+                        upotrebeniKarti.dodajKarta(broja - 1, boja1 - 1);
+                        break;
+                    }
                 }
+                Karta k = new Karta(aktivenIgrac, aktivenIgrac.brojNaKarti + 1, upotrebeniKarti, boja1, broja);
+
+                String pateka = "karti/";
+                pateka += broja.ToString() + "-" + boja1.ToString() + ".png";
+                PictureBox box = (PictureBox)aktivenIgrac.ikona.Controls["pictureBox" + aktivenIgrac.id_igr + (aktivenIgrac.brojNaKarti + 1).ToString()];
+                aktivenIgrac.dodadiKarta(k);
+                box.Visible = true;
+                box.Image = Image.FromFile(pateka);
+                this.popolniList();
             }
-            Karta k = new Karta(aktivenIgrac, aktivenIgrac.brojNaKarti+1, upotrebeniKarti, boja1, broja);
-            
-            String pateka = "karti/";
-            pateka += broja.ToString() + "-" + boja1.ToString() + ".png";
-            PictureBox box = (PictureBox)aktivenIgrac.ikona.Controls["pictureBox" + aktivenIgrac.id_igr + (aktivenIgrac.brojNaKarti + 1).ToString()];
-            aktivenIgrac.dodadiKarta(k);
-            box.Visible = true;
-            box.Image = Image.FromFile(pateka);
-            this.popolniList();
-            aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "1"].Visible = false;
+                aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "1"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "2"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "3"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr + "4"].Visible = false;
@@ -783,7 +842,21 @@ namespace BlackJack
             {
                 pobednikNaIgrata();
             }
-            else { aktivenIgrac.PostaviAktiven(); }
+            else if ((aktivenIgrac.presmetajZbir()<21)&&(aktivenIgrac.brojNaKarti < 5)) { aktivenIgrac.PostaviAktiven(); }
+            else if (aktivenIgrac.presmetajZbir() < 21)
+            {
+                if ((igraci.Count > aktivenIgrac.id_igr) && ((igraci.Count > aktivenIgrac.id_igr) && (igraci[aktivenIgrac.id_igr] != null)))
+                {
+                    aktivenIgrac = igraci[aktivenIgrac.id_igr];
+                    brojac = 0;
+                    aktivenIgrac.PostaviAktiven();
+                }
+                else
+                {
+                    brojac = 0;
+                    otvoriKartaDealer();
+                }
+            }
            
         }
 
@@ -883,16 +956,20 @@ namespace BlackJack
                         {
                             g += p.ime;
                             g += " ";
-                            pom = p.vlog / 2;
-                             listBox2.Items.Add(p.ime+ "            " + p.vlog/2);
+                            String[] pk = new String[2];
+                            pk[0] = p.ime;
+                            int k1 = p.vlog+(p.vlog / 2);
+                            pk[1] = k1.ToString();
+                            dataGridView3.Rows.Add(pk);
+                            pom = k1;
                         }
                     }
                    player.Play();
-                    d = MessageBox.Show("Играта е завршена. Делачот изгуби. Добитници се"+g+" со добивка"+pom+ " . Дали сакате уште една партија BlackJack?", "Завршена игра", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    d = MessageBox.Show("Играта е завршена. Делачот изгуби. Добитници се "+g+" со добивка "+pom+ " . Дали сакате уште една партија BlackJack?", "Завршена игра", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     
                 }
                 else {
-                    int f = 0;
+                    int f = 500;
                     foreach (Player p in igraci)
                     {
                         if (p.igra)
@@ -900,7 +977,11 @@ namespace BlackJack
                             f += p.vlog;
                         }
                     }
-                    listBox2.Items.Add("dealer "+ "            " + f);
+                    String[] pl = new String[2];
+                    pl[0] = "Делач";
+                    pl[1] = f.ToString();
+                    dataGridView3.Rows.Add(pl);
+                    
                     player.Play();
                     d = MessageBox.Show("Играта е завршена. Делачот победи. Неговата добивка изнесува "+f, "Дали сакате уште една партија BlackJack?", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     
@@ -924,7 +1005,7 @@ namespace BlackJack
 
         private string presmetajDelacDobivka()
         {
-            int i=0;
+            int i=500;
             foreach (Player p in igraci)
             {
                 if (p.igra)
@@ -940,7 +1021,11 @@ namespace BlackJack
 
             timerIgrac.Stop();
             brojac = 0;
-            listBox2.Items.Add("Делач" + "            " + this.presmetajDelacDobivka());
+            String[] pg = new String[2];
+            pg[0] = "Делач";
+            pg[1] = this.presmetajDelacDobivka();
+            dataGridView3.Rows.Add(pg);
+            
             player.Play();
             DialogResult d = MessageBox.Show("Играта е завршена. Делачот доби добивка. Тој има добивка:" + presmetajDelacDobivka() + ". Дали сакате уште една партија?", "Завршена партија.", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             
@@ -968,9 +1053,13 @@ namespace BlackJack
             }
             if ((p1 != null)&&(p1.presmetajZbir()!=dealer.PresmetajZbirKarti()))
             {
-                listBox2.Items.Add(p1.ime + "            " + p1.vlog / 2);
+                int j = p1.vlog+(p1.vlog / 2);
+                String[] pf = new String[2];
+                pf[0] = p1.ime;
+                pf[1] = j.ToString();
+                dataGridView3.Rows.Add(pf);
                 player.Play();
-                DialogResult d = MessageBox.Show("Делачот изгуби, добитник во играта е играчот" + p1.ime + " со збир на карти: " + p1.presmetajZbir() + ". Дали сакате уште една партија BlackJack?", "Завршена партија.", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                DialogResult d = MessageBox.Show("Делачот изгуби, добитник во играта е играчот" + p1.ime + " со добивка: " + j + ". Дали сакате уште една партија BlackJack?", "Завршена партија.", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (d == DialogResult.Yes)
                 {
 
@@ -982,7 +1071,10 @@ namespace BlackJack
             }
             else if (p1 == null)
             {
-                listBox2.Items.Add("dealer" + "                " + this.presmetajDelacDobivka());
+                String[] pd = new String[2];
+                pd[0] = "Делач";
+                pd[1] = this.presmetajDelacDobivka();
+                dataGridView3.Rows.Add(pd);
                 player.Play();
                 DialogResult d = MessageBox.Show("Победник на играта е делачот, со збир на карти: " + dealer.PresmetajZbirKarti() + ". Дали сакате уште една партија BlackJack?", "Завршена партија.", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (d == DialogResult.Yes)
@@ -995,7 +1087,10 @@ namespace BlackJack
             }
             else if ((p1!=null)&&(dealer.PresmetajZbirKarti()==p1.presmetajZbir()))
             {
-                listBox2.Items.Add("dealer" + "                " + this.presmetajDelacDobivka());
+                String[] pn = new String[2];
+                pn[0] = "Делач";
+                pn[1] = this.presmetajDelacDobivka();
+                
                 DialogResult d = MessageBox.Show("Играта заврши нерешено. Дали сакате уште една партија BlackJack?", "Завршена партија.", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (d == DialogResult.Yes)
                 {
@@ -1181,11 +1276,14 @@ namespace BlackJack
             timerIgrac.Stop();
             MessageBox.Show("Играчот се откажа." + "Неговата добивка изнесува " + aktivenIgrac.vlog / 2);
             textBox8.Text = (aktivenIgrac.vlog / 2).ToString();
-            aktivenIgrac.vlog = aktivenIgrac.vlog / 2;
-            listBox2.Items.Add(aktivenIgrac.ime + "            " + aktivenIgrac.vlog/2);
-
+            
+            String[] p = new String[2];
+            p[0] = aktivenIgrac.ime;
+            p[1] = Convert.ToString((aktivenIgrac.vlog / 2));
+            dataGridView3.Rows.Add(p);
+aktivenIgrac.vlog = aktivenIgrac.vlog / 2;
             aktivenIgrac.igra = false;
-
+            aktivenIgrac.otkazi = true;
             
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "1"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "2"].Visible = false;
@@ -1286,11 +1384,15 @@ namespace BlackJack
             timerIgrac.Stop();
             MessageBox.Show("Играчот се откажа." + "Неговиот влог изнесува: " + aktivenIgrac.vlog / 2);
             textBox9.Text = (aktivenIgrac.vlog / 2).ToString();
-            aktivenIgrac.vlog = aktivenIgrac.vlog / 2;
-            listBox2.Items.Add(aktivenIgrac.ime + "            " + aktivenIgrac.vlog/2);
-
+            
+            String[] p = new String[2];
+            p[0] = aktivenIgrac.ime;
+            p[1] = Convert.ToString((aktivenIgrac.vlog / 2));
+            dataGridView3.Rows.Add(p);
+aktivenIgrac.vlog = aktivenIgrac.vlog / 2;
             brojac = 0;
             aktivenIgrac.igra = false;
+            aktivenIgrac.otkazi = true;
 
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "1"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "2"].Visible = false;
@@ -1318,11 +1420,15 @@ namespace BlackJack
             timerIgrac.Stop();
             MessageBox.Show("Играчот се откажа." + "Неговиот влог изнесува: " + aktivenIgrac.vlog / 2);
             textBox10.Text = (aktivenIgrac.vlog / 2).ToString();
-            aktivenIgrac.vlog = aktivenIgrac.vlog / 2;
-            listBox2.Items.Add(aktivenIgrac.ime + "            " + aktivenIgrac.vlog/2);
-
+            
+            String[] p = new String[2];
+            p[0] = aktivenIgrac.ime;
+            p[1] = Convert.ToString((aktivenIgrac.vlog / 2));
+            dataGridView3.Rows.Add(p);
+aktivenIgrac.vlog = aktivenIgrac.vlog / 2;
             brojac = 0;
             aktivenIgrac.igra = false;
+            aktivenIgrac.otkazi = true;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "1"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "2"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "3"].Visible = false;
@@ -1349,11 +1455,16 @@ namespace BlackJack
             timerIgrac.Stop();
             MessageBox.Show("Играчот се откажа." + "Неговата добивка изнесува: " + aktivenIgrac.vlog / 2);
             textBox11.Text = (aktivenIgrac.vlog / 2).ToString();
-            aktivenIgrac.vlog = aktivenIgrac.vlog / 2;
-            listBox2.Items.Add(aktivenIgrac.ime + "            " + aktivenIgrac.vlog/2);
-
+            
+            String[] p = new String[2];
+            p[0] = aktivenIgrac.ime;
+            p[1] = Convert.ToString((aktivenIgrac.vlog / 2));
+            dataGridView3.Rows.Add(p);
+aktivenIgrac.vlog = aktivenIgrac.vlog / 2;
             brojac = 0;
             aktivenIgrac.igra = false;
+            aktivenIgrac.otkazi = true;
+
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "1"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "2"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "3"].Visible = false;
@@ -1380,11 +1491,16 @@ namespace BlackJack
             timerIgrac.Stop();
             MessageBox.Show("Играчот се откажа." + "Неговата добивка изнесува " + aktivenIgrac.vlog / 2);
             textBox12.Text = (aktivenIgrac.vlog / 2).ToString();
-            listBox2.Items.Add(aktivenIgrac.ime + "            " + aktivenIgrac.vlog/2);
+            String[] p = new String[2];
+            p[0] = aktivenIgrac.ime;
+            p[1] = Convert.ToString((aktivenIgrac.vlog / 2));
+            dataGridView3.Rows.Add(p);
 
             aktivenIgrac.vlog = aktivenIgrac.vlog / 2;
             brojac = 0;
-            aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "1"].Visible = false;
+            aktivenIgrac.igra = false;
+            aktivenIgrac.otkazi = true;
+                aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "1"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "2"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "3"].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString() + "4"].Visible = false;
@@ -1392,7 +1508,7 @@ namespace BlackJack
             aktivenIgrac.ikona.Controls["label" + aktivenIgrac.id_igr.ToString() + aktivenIgrac.id_igr.ToString()].Visible = false;
             aktivenIgrac.ikona.Controls["button" + aktivenIgrac.id_igr.ToString()].Visible = false;
             otkaziIgrac();
-            aktivenIgrac.igra = false;
+            
             
                 brojac = 0;
                 otvoriKartaDealer();
@@ -1641,7 +1757,14 @@ namespace BlackJack
             brojac = 0;
             timerIgrac.Stop();
             player.Stop();
+            
             loser.Stop();
+            this.Dispose();
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
 
 
