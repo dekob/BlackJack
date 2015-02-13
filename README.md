@@ -111,7 +111,7 @@ UsedCards ни претставува помошна структура која
       
 Главната функција која се користи за генерирање на карти е generirajKarta() во класата Karta.
       
-            public void generirajKarta()
+       public void generirajKarta()
       {
             int broj1;
             int broj2;
